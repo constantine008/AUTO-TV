@@ -2,14 +2,14 @@ from utils.config import config, resource_path
 from utils.tools import (
     check_url_by_patterns,
     get_total_urls_from_info_list,
-    check_ipv6_support,
     process_nested_dict,
     get_resolution_value,
+    add_url_info,
+    remove_cache_info,
 )
 from utils.speed import (
     sort_urls_by_speed_and_resolution,
     is_ffmpeg_installed,
-    add_info_url,
     speed_cache,
 )
 import os
@@ -29,6 +29,11 @@ log_dir = "output"
 log_file = "result_new.log"
 log_path = os.path.join(log_dir, log_file)
 handler = None
+
+url_regex = r"\b((https?):\/\/)?(\[[0-9a-fA-F:]+\]|([\w-]+\.)+[\w-]+)(:[0-9]{1,5})?(\/[^\s]*)?\b"
+rtp_regex = r"^(.*?),(rtp://.*)?$"
+txt_regex = r"^(.*?)(?:,)?((?!#genre#)" + url_regex + r")?$"
+m3u_regex = r"^#EXTINF:-1.*?,(.*?)\n" + url_regex + r"$"
 
 
 def setup_logging():
@@ -59,19 +64,16 @@ def cleanup_logging():
         os.remove(log_path)
 
 
-txt_pattern = r"^(.*?),(?!#genre#)(.*?)$"
-m3u_pattern = r"^#EXTINF:-1.*?,(.*?)\n(.*?)$"
-
-
-def get_name_url(content):
+def get_name_url(content, m3u=False, rtp=False, check_url=True):
     """
     Get channel name and url from content
     """
-    matches = re.findall(
-        m3u_pattern if "#EXTM3U" in content else txt_pattern, content, re.MULTILINE
-    )
+    regex = m3u_regex if m3u else rtp_regex if rtp else txt_regex
+    matches = re.findall(regex, content, re.MULTILINE)
     channels = [
-        {"name": match[0].strip(), "url": match[1].strip()} for match in matches
+        {"name": match[0].strip(), "url": match[1].strip()}
+        for match in matches
+        if (check_url and match[1].strip()) or not check_url
     ]
     return channels
 
@@ -81,21 +83,21 @@ def get_channel_data_from_file(channels, file, use_old):
     Get the channel data from the file
     """
     current_category = ""
-    pattern = re.compile(r"^(.*?)(,(?!#genre#)(.*?))?$")
 
     for line in file:
         line = line.strip()
         if "#genre#" in line:
             current_category = line.split(",")[0]
         else:
-            match = pattern.search(line)
-            if match is not None and match.group(1):
-                name = match.group(1).strip()
+            name_url = get_name_url(line, check_url=False)
+            if name_url and name_url[0]:
+                name = name_url[0]["name"]
+                url = name_url[0]["url"]
                 category_dict = channels[current_category]
                 if name not in category_dict:
                     category_dict[name] = []
-                if use_old and match.group(3):
-                    info = (match.group(3).strip(), None, None, None)
+                if use_old and url:
+                    info = (url, None, None, None)
                     if info[0] and info not in category_dict[name]:
                         category_dict[name].append(info)
     return channels
@@ -130,15 +132,18 @@ def get_channel_items():
     return channels
 
 
+open_keep_all = config.getboolean("Settings", "open_keep_all", fallback=False)
+
+
 def format_channel_name(name):
     """
     Format the channel name with sub and replace and lower
     """
-    if config.getboolean("Settings", "open_keep_all", fallback=False):
+    if open_keep_all:
         return name
     cc = OpenCC("t2s")
     name = cc.convert(name)
-    sub_pattern = r"-|_|\((.*?)\)|\（(.*?)\）|\[(.*?)\]|\「(.*?)\」| |｜|频道|普清|标清|高清|HD|hd|超清|超高|超高清|中央|央视|台"
+    sub_pattern = r"-|_|\((.*?)\)|\（(.*?)\）|\[(.*?)\]|\「(.*?)\」| |｜|频道|普清|标清|高清|HD|hd|超清|超高|超高清|中央|央视|台|电信|联通|移动"
     name = re.sub(sub_pattern, "", name)
     replace_dict = {
         "plus": "+",
@@ -182,7 +187,7 @@ def channel_name_is_equal(name1, name2):
     """
     Check if the channel name is equal
     """
-    if config.getboolean("Settings", "open_keep_all", fallback=False):
+    if open_keep_all:
         return True
     name1_format = format_channel_name(name1)
     name2_format = format_channel_name(name2)
@@ -290,9 +295,14 @@ def get_channel_multicast_result(result, search_result):
         info_list = [
             (
                 (
-                    f"http://{url}/rtp/{ip}$cache:{url}"
+                    add_url_info(
+                        f"http://{url}/rtp/{ip}",
+                        f"{result_region}{result_type}组播源|cache:{url}",
+                    )
                     if open_sort
-                    else f"http://{url}/rtp/{ip}"
+                    else add_url_info(
+                        f"http://{url}/rtp/{ip}", f"{result_region}{result_type}组播源"
+                    )
                 ),
                 date,
                 resolution,
@@ -459,13 +469,12 @@ def get_channel_url(text):
     Get the url from text
     """
     url = None
-    urlRegex = r"\b((https?):\/\/)?(([\w-]+\.)+[\w-]+)(:[0-9]{1,5})?(\/[^\s]*)?\b"
     url_search = re.search(
-        urlRegex,
+        url_regex,
         text,
     )
     if url_search:
-        url = url_search.group().strip()
+        url = url_search.group()
     return url
 
 
@@ -530,7 +539,7 @@ def append_total_data(*args, **kwargs):
     """
     Append total channel data
     """
-    if config.getboolean("Settings", "open_keep_all", fallback=False):
+    if open_keep_all:
         append_all_method_data_keep_all(*args, **kwargs)
     else:
         append_all_method_data(*args, **kwargs)
@@ -686,7 +695,7 @@ async def sort_channel_list(
             return {"cate": cate, "name": name, "data": data}
 
 
-async def process_sort_channel_list(data, callback=None):
+async def process_sort_channel_list(data, ipv6=False, callback=None):
     """
     Processs the sort channel list
     """
@@ -699,18 +708,14 @@ async def process_sort_channel_list(data, callback=None):
         config.get("Settings", "min_resolution", fallback="1920x1080")
     )
     open_ipv6 = "ipv6" in ipv_type or "all" in ipv_type or "全部" in ipv_type
-    ipv6_proxy = (
-        None
-        if not open_ipv6 or check_ipv6_support()
-        else "http://www.ipv6proxy.net/go.php?u="
-    )
+    ipv6_proxy = None if not open_ipv6 or ipv6 else "http://www.ipv6proxy.net/go.php?u="
     ffmpeg_installed = is_ffmpeg_installed()
     if open_ffmpeg and not ffmpeg_installed:
         print("FFmpeg is not installed, using requests for sorting.")
     is_ffmpeg = open_ffmpeg and ffmpeg_installed
     semaphore = asyncio.Semaphore(5)
     need_sort_data = copy.deepcopy(data)
-    process_nested_dict(need_sort_data, seen=set(), flag="$cache:")
+    process_nested_dict(need_sort_data, seen=set(), flag=r"cache:(.*)")
     tasks = [
         asyncio.create_task(
             sort_channel_list(
@@ -738,43 +743,45 @@ async def process_sort_channel_list(data, callback=None):
         for name, info_list in obj.items():
             sort_info_list = sort_data.get(cate, {}).get(name, [])
             sort_urls = {
-                sort_url[0].split("$")[0]
+                remove_cache_info(sort_url[0])
                 for sort_url in sort_info_list
                 if sort_url and sort_url[0]
             }
             for url, date, resolution, origin in info_list:
-                url_rsplit = url.rsplit("$cache:", 1)
-                if len(url_rsplit) != 2:
-                    continue
-                url, cache_key = url_rsplit
-                url = url.split("$")[0]
-                if url in sort_urls or cache_key not in speed_cache:
-                    continue
-                cache = speed_cache[cache_key]
-                if not cache:
-                    continue
-                response_time, resolution = cache
-                if response_time and response_time != float("inf"):
-                    if resolution:
-                        url = add_info_url(url, resolution)
-                        if open_filter_resolution:
-                            resolution_value = get_resolution_value(resolution)
-                            if resolution_value < min_resolution:
-                                continue
-                    append_data_to_info_data(
-                        sort_data,
-                        cate,
-                        name,
-                        [(url, date, resolution, origin)],
-                        check=False,
-                    )
-                    logging.info(
-                        f"Name: {name}, URL: {url}, Date: {date}, Resolution: {resolution}, Response Time: {response_time} ms"
-                    )
+                if "$" in url:
+                    matcher = re.search(r"cache:(.*)", url)
+                    if matcher:
+                        cache_key = matcher.group(1)
+                        if not cache_key:
+                            continue
+                    url = remove_cache_info(url)
+                    if url in sort_urls or cache_key not in speed_cache:
+                        continue
+                    cache = speed_cache[cache_key]
+                    if not cache:
+                        continue
+                    response_time, resolution = cache
+                    if response_time and response_time != float("inf"):
+                        if resolution:
+                            if open_filter_resolution:
+                                resolution_value = get_resolution_value(resolution)
+                                if resolution_value < min_resolution:
+                                    continue
+                            url = add_url_info(url, resolution)
+                        append_data_to_info_data(
+                            sort_data,
+                            cate,
+                            name,
+                            [(url, date, resolution, origin)],
+                            check=False,
+                        )
+                        logging.info(
+                            f"Name: {name}, URL: {url}, Date: {date}, Resolution: {resolution}, Response Time: {response_time} ms"
+                        )
     return sort_data
 
 
-def write_channel_to_file(items, data, callback=None):
+def write_channel_to_file(items, data, ipv6=False, callback=None):
     """
     Write channel to file
     """
@@ -785,13 +792,18 @@ def write_channel_to_file(items, data, callback=None):
             now += datetime.timedelta(hours=8)
         update_time = now.strftime("%Y-%m-%d %H:%M:%S")
         update_channel_urls_txt("更新时间", f"{update_time}", ["url"])
-    for cate, channel_obj in items:
+    result_items = (
+        data.items()
+        if config.getboolean("Settings", "open_keep_all", fallback=False)
+        else items
+    )
+    for cate, channel_obj in result_items:
         print(f"\n{cate}:", end=" ")
         channel_obj_keys = channel_obj.keys()
         names_len = len(list(channel_obj_keys))
         for i, name in enumerate(channel_obj_keys):
             info_list = data.get(cate, {}).get(name, [])
-            channel_urls = get_total_urls_from_info_list(info_list)
+            channel_urls = get_total_urls_from_info_list(info_list, ipv6=ipv6)
             end_char = ", " if i < names_len - 1 else ""
             print(f"{name}:", len(channel_urls), end=end_char)
             update_channel_urls_txt(cate, name, channel_urls, callback=callback)
@@ -877,7 +889,7 @@ def format_channel_url_info(data):
     for obj in data.values():
         for url_info in obj.values():
             for i, (url, date, resolution, origin) in enumerate(url_info):
-                url = url.split("$", 1)[0]
+                url = remove_cache_info(url)
                 if resolution:
-                    url = add_info_url(url, resolution)
+                    url = add_url_info(url, resolution)
                 url_info[i] = (url, date, resolution, origin)
