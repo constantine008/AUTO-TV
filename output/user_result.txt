@@ -1,5 +1,5 @@
 更新时间,#genre#
-2025-01-11 18:20:57,url
+2025-01-12 06:10:10,url
 📺央视频道,#genre#
 CCTV-1,http://61.138.128.226:19901/tsfile/live/0001_1.m3u8$订阅源
 CCTV-1,http://113.25.252.226:9901/tsfile/live/0001_1.m3u8$订阅源
@@ -15,7 +15,7 @@ CCTV-4,http://117.27.190.42:9998/tsfile/live/23235_1.m3u8$订阅源
 CCTV-4,http://218.89.240.144:59901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0$订阅源
 CCTV-5,http://116.128.242.83:9901/tsfile/live/0006_1.m3u8$订阅源
 CCTV-5,http://120.76.248.139/live/bfgd/4200000064.m3u8$订阅源
-CCTV-5,http://219.159.91.10:9901/tsfile/live/0005_1.m3u8$订阅源
+CCTV-5,http://111.31.22.5/cache.ott.fifalive.itv.cmvideo.cn/000000001000//1.m3u8?channel-id=ystenlive&Contentid=1000000005000265005&livemode=1&stbId=3$订阅源
 CCTV-5+,http://211.101.247.19:6699/api/migu.php?type=hls&url=cctv5p$订阅源
 CCTV-5+,http://116.128.242.83:9901/tsfile/live/0005_1.m3u8$订阅源
 CCTV-5+,http://117.27.190.42:9998/tsfile/live/23248_1.m3u8$订阅源
