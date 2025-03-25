@@ -1,5 +1,5 @@
 更新时间,#genre#
-2025-03-24 06:11:13,url
+2025-03-25 18:25:21,url
 📺央视频道,#genre#
 CCTV-1,http://61.138.128.226:19901/tsfile/live/0001_1.m3u8$订阅源
 CCTV-1,http://121.33.239.242:9901/tsfile/live/0001_1.m3u8$订阅源
@@ -181,9 +181,9 @@ CCTV-17,http://58.19.43.46:9901/tsfile/live/1047_1.m3u8$订阅源
 凤凰香港,http://tptvh.mobaibox.com/hwcdnbacksourceflag_223.110.243.237:80/PLTV/3/224/3221228530/1.m3u8?accountinfo=zZFAoaFBf0eeoBboZZ7f2LG%2Bb0LrBOSBfEzhwiBMvngq%2FpkEzcEgSA5jxU7E691yLgLXQIrVnITSKe4cR7UMbSd2y6TJst%2Bjh31VKZhtgiKIZEDSyu578hnwyF2DFwHcbF2ObC9a54Vp367lDA52PczEcH9gPEwYj%2BtNwrWi0aU%3D%3A20241025090828%2C-1%2C112.25.63.228%2C20241025090828%2CHD-10000k-1080P-fhhongkong5s%2C1734208302178_77%3A98%3AB2%3A9A%3AA8%3A67%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000016268434_0%2CEND&GuardEncType=2&servicetype=1&unionUrl=gitv%2Flive1%2FHD-10000k-1080P-fhhongkong5s%2FHD-10000k-1080P-fhhongkong5s&icpid=88888888&from=5&popid=5&hms_devid=6448&prioritypopid=5$订阅源
 凤凰卫视,https://stream1.freetv.fun/08e5440bb83a804440e341ae792cffc38d6844b04d5a2c7a4fc5ee04a6fe6bc6.m3u8$
 凤凰卫视,https://stream1.freetv.fun/08e5440bb83a804440e341ae792cffc38d6844b04d5a2c7a4fc5ee04a6fe6bc6.m3u8$LR•IPV4『线路5』$
-TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/playlist.m3u8$订阅源|1920x1080
+TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/playlist.m3u8$订阅源
 TVBS亚洲,http://38.64.72.148:80/hls/modn/list/4005/chunklist1.m3u8$订阅源|1920x1080
-TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/chunklist0.m3u8$订阅源|1920x1080
+TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/chunklist0.m3u8$订阅源
 香港卫视,http://cctvtxyh5c.liveplay.myqcloud.com/cstv/xianggangweishi_2/index.m3u8$订阅源
 香港卫视,http://cctvtxyh5c.liveplay.myqcloud.com/cstv/xianggangweishi_2/index.m3u8$
 香港卫视,https://stream1.freetv.fun/c751876ae5ceaa0d82b5cf2badc152342aa92a4b45bf504d12ee45966b2fc644.ctv$LR•IPV4『线路10』$
@@ -193,6 +193,7 @@ TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/chunklist0.m3u8$订阅源|1920
 J2,http://r.jdshipin.com/ndGgS$订阅源
 J2,http://r.jdshipin.com/Nr5jq$订阅源
 J2,http://r.jdshipin.com/Nr5jq$
+Viutv,https://live.hkdvb.com/hls/live/99.m3u8?token=631170156112507&edge=live.tvfree.sbs$订阅源
 三立台湾,https://stream1.freetv.fun/san-li-tai-wan-5.m3u8$
 三立台湾,https://stream1.freetv.fun/san-li-tai-wan-1.ctv$
 无线新闻,http://cdn.iptv8k.top/dl/jspd.php?id=2$订阅源|1920x1080
