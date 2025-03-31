@@ -1,5 +1,5 @@
 更新时间,#genre#
-2025-03-30 06:10:11,url
+2025-03-31 18:25:47,url
 📺央视频道,#genre#
 CCTV-1,http://61.138.128.226:19901/tsfile/live/0001_1.m3u8$订阅源
 CCTV-1,http://121.33.239.242:9901/tsfile/live/0001_1.m3u8$订阅源
@@ -194,6 +194,7 @@ TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/chunklist0.m3u8$订阅源|1920
 J2,http://r.jdshipin.com/ndGgS$订阅源
 J2,http://r.jdshipin.com/Nr5jq$订阅源
 J2,http://r.jdshipin.com/Nr5jq$
+Viutv,https://live.hkdvb.com/hls/live/99.m3u8?token=631170156112507&edge=live.tvfree.sbs$订阅源
 三立台湾,https://stream1.freetv.fun/san-li-tai-wan-5.m3u8$订阅源
 三立台湾,https://stream1.freetv.fun/san-li-tai-wan-1.ctv$订阅源
 三立台湾,https://stream1.freetv.fun/san-li-tai-wan-5.m3u8$
