@@ -1,5 +1,5 @@
 更新时间,#genre#
-2025-04-01 06:12:11,url
+2025-04-01 18:25:11,url
 📺央视频道,#genre#
 CCTV-1,http://61.138.128.226:19901/tsfile/live/0001_1.m3u8$订阅源
 CCTV-1,http://121.33.239.242:9901/tsfile/live/0001_1.m3u8$订阅源
@@ -11,7 +11,7 @@ CCTV-3,http://61.138.128.226:19901/tsfile/live/0003_1.m3u8$订阅源
 CCTV-3,http://121.33.239.242:9901/tsfile/live/0003_1.m3u8$订阅源
 CCTV-3,http://111.31.22.5/cache.ott.fifalive.itv.cmvideo.cn/000000001000/1.m3u8?channel-id=ystenlive&Contentid=1000000005000265003&livemode=1&stbId=3$订阅源
 CCTV-4,http://111.31.22.5/cache.ott.fifalive.itv.cmvideo.cn/000000001000/1.m3u8?channel-id=ystenlive&Contentid=1000000005000265004&livemode=1&stbId=3$订阅源
-CCTV-4,https://global.cgtn.cicc.media.caton.cloud/master/cgtn-america.m3u8$订阅源|1920x1080
+CCTV-4,https://global.cgtn.cicc.media.caton.cloud/master/cgtn-america.m3u8$订阅源
 CCTV-4,http://121.33.239.242:9901/tsfile/live/0004_1.m3u8$订阅源
 CCTV-5,http://111.31.22.5/cache.ott.fifalive.itv.cmvideo.cn/000000001000//1.m3u8?channel-id=ystenlive&Contentid=1000000005000265005&livemode=1&stbId=3$订阅源
 CCTV-5,https://api.olelive.com/dis/live/CCTV5HD/hls.m3u8$订阅源|1920x1080
